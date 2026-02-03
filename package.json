@@ -1,0 +1,14 @@
+{
+  "name": "japan-rpg-root",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@prisma/client": "^6.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "prisma": "^6.3.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.7.0"
+  }
+}
