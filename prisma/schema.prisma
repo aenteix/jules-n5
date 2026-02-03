@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cardProgress CardProgress[]
+}
+
+model VocabularyDeck {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cards Card[]
+}
+
+model Card {
+  id           String   @id @default(cuid())
+  hiragana     String
+  romaji       String
+  meaning      String
+
+  deckId       String
+  deck         VocabularyDeck @relation(fields: [deckId], references: [id])
+
+  cardProgress CardProgress[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model CardProgress {
+  id            String   @id @default(cuid())
+  userId        String
+  cardId        String
+
+  // Spaced Repetition Fields (SM-2)
+  nextReviewDate DateTime
+  interval       Int      @default(0) // Interval in days
+  easeFactor     Float    @default(2.5) // Standard starting ease factor
+  repetitions    Int      @default(0) // Consecutive correct answers
+  mastery        Int      @default(0) // Mastery level 0-5
+
+  user          User     @relation(fields: [userId], references: [id])
+  card          Card     @relation(fields: [cardId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, cardId])
+}
